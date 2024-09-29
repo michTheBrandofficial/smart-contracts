@@ -51,8 +51,6 @@ contract Razor {
 		return mintedTokens;
 	}
 
-	error MintFailed(uint32 _amount);
-
 	function issue(address _receiver, uint32 _amount) public onlyMinter {
 		uint32 _mintedAmount = mint(_amount);
 		balances[_receiver] += _mintedAmount;
@@ -60,5 +58,19 @@ contract Razor {
 
 	function getBalance(address _address) public view returns (uint32) {
 		return balances[_address];
+	}
+
+	error InsufficientBalance(address _address, uint32 _balance);
+
+	modifier hasEnoughBalance(address _address, uint32 _balance, uint32 _amount) {
+		if (!(_balance >= _amount)) {
+			revert InsufficientBalance(_address, _balance);
+		} 
+		_;
+	}
+
+	function transfer(address _sender, address _recipient, uint32 _amount) public hasEnoughBalance(_sender, balances[_sender], _amount) {
+		balances[_recipient] += _amount;
+		balances[_sender] -= _amount;
 	}
 }
