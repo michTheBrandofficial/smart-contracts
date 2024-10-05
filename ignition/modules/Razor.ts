@@ -4,7 +4,8 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
 const RazorModule = buildModule("RazorModule", (m) => {
-  const razor = m.contract("Razor", [])
+  const razor = m.contract("Razor");
+
   return { razor };
 });
 
